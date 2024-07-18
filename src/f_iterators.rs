@@ -40,7 +40,10 @@ pub fn bounded_absolute_values(vals: impl Iterator<Item = i32>) -> impl Iterator
 pub fn first_n_even(mut vals: impl Iterator<Item = u32>) -> Option<impl Iterator<Item = u32>> {
 	// You should remove the following line (and this comment). It is just there because the
 	// compiler doesn't allow todo!() when the return type is impl Trait
-	Some(Vec::new().into_iter())
+	// Some(Vec::new().into_iter())
+
+	let n = vals.next()?;  // extract first value of determine count, return None if emty
+	Some(vals.filter(|x| x % 2 == 0).take(n as usize)) // Return the first n even values
 }
 
 /// Return an "infinite" iterator that yields the squares of the whole numbers.
@@ -50,7 +53,9 @@ pub fn first_n_even(mut vals: impl Iterator<Item = u32>) -> Option<impl Iterator
 pub fn square_whole_numbers() -> impl Iterator<Item = u32> {
 	// You should remove the following line (and this comment). It is just there because the
 	// compiler doesn't allow todo!() when the return type is impl Trait
-	Vec::new().into_iter()
+	// Vec::new().into_iter()
+
+	(0u32..).map(|x| x * x) // Creates an infinite iterator of squares
 }
 
 /// An iterator that generates the Fibonacci sequence.
@@ -66,7 +71,34 @@ impl Iterator for Fibonacci {
 	type Item = u32;
 
 	fn next(&mut self) -> Option<u32> {
-		todo!()
+        let next = match (self.prev_prev, self.prev) {
+            // Both are None at the start of the sequence.
+            (None, None) => {
+                self.prev_prev = Some(0);
+                Some(0)
+            },
+            // After the first number, prev_prev is 0, prev is None.
+            (Some(0), None) => {
+                self.prev = Some(1);
+                Some(1)
+            },
+            // Calculate the next Fibonacci number.
+            (Some(a), Some(b)) => {
+                let next = a + b;
+                self.prev_prev = Some(b);
+                self.prev = Some(next);
+                Some(next)
+            },
+            // Handles all cases where `prev` is None but `prev_prev` is not (general catch-all for corrupted states).
+            (_, None) => {
+                self.prev = Some(1);
+                Some(1)
+            },
+            // This should never be hit, but it handles corrupted states gracefully.
+            _ => None,
+        };
+
+        next
 	}
 }
 
@@ -74,13 +106,13 @@ impl Iterator for Fibonacci {
 /// On a scale from 0 - 255, with zero being extremely easy and 255 being extremely hard,
 /// how hard did you find this section of the exam.
 pub fn how_hard_was_this_section() -> u8 {
-	todo!()
+	255
 }
 
 /// This function is not graded. It is just for collecting feedback.
 /// How much time (in hours) did you spend on this section of the exam?
 pub fn how_many_hours_did_you_spend_on_this_section() -> u8 {
-	todo!()
+	3
 }
 
 #[cfg(test)]
