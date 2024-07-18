@@ -11,7 +11,7 @@
 /// This function takes an iterator of u32 values, squares each value, and returns the sum of the
 /// squares. You may assume that no individual square, nor the entire sum, overflows the u32 type.
 pub fn sum_of_squares(vals: impl Iterator<Item = u32>) -> u32 {
-	todo!()
+	vals.map(|x| x * x).sum()
 }
 
 /// This function takes an iterator of i32 values, calculates the absolute value of each, and throws
@@ -20,7 +20,11 @@ pub fn sum_of_squares(vals: impl Iterator<Item = u32>) -> u32 {
 pub fn bounded_absolute_values(vals: impl Iterator<Item = i32>) -> impl Iterator<Item = u32> {
 	// You should remove the following line (and this comment). It is just there because the
 	// compiler doesn't allow todo!() when the return type is impl Trait
-	Vec::new().into_iter()
+	// Vec::new().into_iter()
+
+	vals.map(|x| x.abs() as u32).filter(|&x| x <= 100)
+	// 1. Converts each i32 to its absolute value and casts to u32
+	// 2. Filters out any values that are greater than 100
 }
 
 // We allow `unused_mut` only so that there is no build warning on the starter code.

@@ -4,6 +4,7 @@
 
 // NOTE: You will need to `use` something from the standard library to implement `Ord` and
 // `PartialOrd` here.
+use std::cmp::Ordering; // ordering decisions ordered less, equal, or greater
 
 /// A record of an employee at a particular company
 #[derive(Debug)]
@@ -22,7 +23,7 @@ pub struct Employee {
 
 impl PartialEq for Employee {
 	fn eq(&self, other: &Self) -> bool {
-		todo!("complete the implementation");
+		self.uid == other.uid 	// check if they have the same uid
 	}
 }
 impl Eq for Employee {}
@@ -33,14 +34,25 @@ impl Eq for Employee {}
 // at the company divided by their wage. Use integer division for the purpose of this calculation.
 
 impl PartialOrd for Employee {
-	fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-		todo!("complete the implementation");
+	fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> { // take two references from Employee and return Option<Ordering> that can be None so need to returning Some(Ordering)
+		if self.uid == other.uid { // if they have same uid
+			Some(Ordering::Equal) // they are equal
+		} else {
+			self.value().partial_cmp(&other.value()) // if not, sort by function value
+		}
 	}
 }
 
 impl Ord for Employee {
 	fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-		todo!("complete the implementation");
+		self.partial_cmp(other).unwrap()
+	}
+}
+
+impl Employee {
+	/// Calculate the value of this employee
+	fn value(&self) -> u32 {
+		self.experience / self.wage
 	}
 }
 
@@ -59,14 +71,27 @@ impl TryFrom<String> for Employee {
 	type Error = &'static str;
 
 	fn try_from(value: String) -> Result<Self, Self::Error> {
-		todo!("complete the implementation");
+		let parts: Vec<&str> = value.split(',').map(str::trim).collect();
+		if parts.len() != 4 {
+			return Err("Invalid input format");
+		}
+		let name = parts[0].to_string();
+		let experience = parts[1].parse::<u32>().map_err(|_| "Invalid experience")?;
+		let wage = parts[2].parse::<u32>().map_err(|_| "Invalid wage")?;
+		let uid = parts[3].parse::<u32>().map_err(|_| "Invalid uid")?;
+		Ok(Employee {
+			name,
+			experience,
+			wage,
+			uid,
+		})
 	}
 }
 
 // We also want to convert employees back into strings in the same format as above.
 impl From<Employee> for String {
 	fn from(e: Employee) -> Self {
-		todo!("complete the implementation");
+		format!("{}, {}, {}, {}", e.name, e.experience, e.wage, e.uid)
 	}
 }
 
@@ -74,13 +99,13 @@ impl From<Employee> for String {
 /// On a scale from 0 - 255, with zero being extremely easy and 255 being extremely hard,
 /// how hard did you find this section of the exam.
 pub fn how_hard_was_this_section() -> u8 {
-	todo!()
+	255
 }
 
 /// This function is not graded. It is just for collecting feedback.
 /// How much time (in hours) did you spend on this section of the exam?
 pub fn how_many_hours_did_you_spend_on_this_section() -> u8 {
-	todo!()
+	4
 }
 
 #[cfg(test)]
