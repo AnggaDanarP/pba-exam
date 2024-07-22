@@ -56,23 +56,43 @@ impl Default for EmployeeBuilder {
 
 impl EmployeeBuilder {
 	pub fn name(self, name: String) -> Self {
-		todo!("finish the implementation.");
-	}
+        Self {
+            name: Some(name),
+            ..self
+        }
+    }
 
-	pub fn uid(self, uid: u32) -> Self {
-		todo!("finish the implementation.");
-	}
+    pub fn uid(self, uid: u32) -> Self {
+        Self {
+            uid: Some(uid),
+            ..self
+        }
+    }
 
-	pub fn experience(self, experience: u32) -> Self {
-		todo!("finish the implementation.");
-	}
+    pub fn experience(self, experience: u32) -> Self {
+        Self {
+            experience,
+            ..self
+        }
+    }
 
-	pub fn wage(self, wage: u32) -> Self {
-		todo!("finish the implementation.");
-	}
+    pub fn wage(self, wage: u32) -> Self {
+        Self {
+            wage,
+            ..self
+        }
+    }
 
 	pub fn build(self) -> Result<Employee, ()> {
-		todo!("finish the implementation.");
+		match (self.name, self.uid) {
+			(Some(name), Some(uid)) => Ok(Employee {
+				name,
+				uid,
+				experience: self.experience,
+				wage: self.wage,
+			}),
+			_ => Err(()),
+		}
 	}
 }
 
@@ -156,37 +176,82 @@ impl Default for TypedEmployeeBuilder<NotNamed, UnIdentified> {
 	}
 }
 
-impl<Name, Id> TypedEmployeeBuilder<Name, Id> {
-	pub fn name(self, name: String) -> Self {
-		todo!("finish the implementation. Note that you might need to move some of these functions to a new `impl` blocks with different trait bounds, or change the return type to use `Named` etc.");
-	}
+impl TypedEmployeeBuilder<NotNamed, UnIdentified> {
+    pub fn name(self, name: String) -> TypedEmployeeBuilder<Named, UnIdentified> {
+        TypedEmployeeBuilder {
+            name: Named { name },
+            uid: self.uid,
+            experience: self.experience,
+            wage: self.wage,
+        }
+    }
 
-	pub fn uid(self, uid: u32) -> Self {
-		todo!("finish the implementation. Note that you might need to move some of these functions to a new `impl` blocks with different trait bounds, or change the return type to use `Named` etc.");
-	}
+    pub fn uid(self, uid: u32) -> TypedEmployeeBuilder<NotNamed, Identified> {
+        TypedEmployeeBuilder {
+            uid: Identified { uid },
+            name: self.name,
+            experience: self.experience,
+            wage: self.wage,
+        }
+    }
+}
 
-	pub fn experience(self, experience: u32) -> Self {
-		todo!("finish the implementation. Note that you might need to move some of these functions to a new `impl` blocks with different trait bounds, or change the return type to use `Named` etc.");
-	}
+impl TypedEmployeeBuilder<Named, UnIdentified> {
+    pub fn uid(self, uid: u32) -> TypedEmployeeBuilder<Named, Identified> {
+        TypedEmployeeBuilder {
+            uid: Identified { uid },
+            name: self.name,
+            experience: self.experience,
+            wage: self.wage,
+        }
+    }
+}
 
-	pub fn wage(self, wage: u32) -> Self {
-		todo!("finish the implementation. Note that you might need to move some of these functions to a new `impl` blocks with different trait bounds, or change the return type to use `Named` etc.");
-	}
+impl TypedEmployeeBuilder<NotNamed, Identified> {
+    pub fn name(self, name: String) -> TypedEmployeeBuilder<Named, Identified> {
+        TypedEmployeeBuilder {
+            name: Named { name },
+            uid: self.uid,
+            experience: self.experience,
+            wage: self.wage,
+        }
+    }
+}
 
-	pub fn build(self) -> Employee {
-		todo!("finish the implementation. Note that you might need to move some of these functions to a new `impl` blocks with different trait bounds, or change the return type to use `Named` etc.");
-	}
+impl TypedEmployeeBuilder<Named, Identified> {
+    pub fn experience(self, experience: u32) -> Self {
+        Self {
+            experience,
+            ..self
+        }
+    }
+
+    pub fn wage(self, wage: u32) -> Self {
+        Self {
+            wage,
+            ..self
+        }
+    }
+
+    pub fn build(self) -> Employee {
+        Employee {
+            name: self.name.name,
+            uid: self.uid.uid,
+            experience: self.experience,
+            wage: self.wage,
+        }
+    }
 }
 
 /// This function is not graded. It is just for collecting feedback.
 /// On a scale from 0 - 255, with zero being extremely easy and 255 being extremely hard,
 /// how hard did you find this section of the exam.
 pub fn how_hard_was_this_section() -> u8 {
-	todo!()
+	255
 }
 
 /// This function is not graded. It is just for collecting feedback.
 /// How much time (in hours) did you spend on this section of the exam?
 pub fn how_many_hours_did_you_spend_on_this_section() -> u8 {
-	todo!()
+	6
 }
