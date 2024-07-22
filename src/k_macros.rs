@@ -35,6 +35,7 @@ macro_rules! map {
 ///
 /// ```
 /// use pba_qualifier_exam::impl_get;
+/// use pba_qualifier_exam::k_macros::Get;
 /// impl_get! {
 /// 	// implements `Get<u32>` for `struct Six`
 /// 	Six: u32 = 6;
